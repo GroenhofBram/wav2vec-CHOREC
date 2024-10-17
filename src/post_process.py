@@ -23,9 +23,9 @@ def main():
                                                           type = "confmat")
     validation_filepath_confmat_levens = get_validation_filepath("ConfMat.csv",
                                                           type = "confmat_levens")
-    check_filepaths(validation_filepath_input, validation_filepath_output,
-                    validaton_filepath_freqdf, validation_filepath_tomodify,
-                    validation_filepath_confmat, validation_filepath_confmat_levens)
+    # check_filepaths(validation_filepath_input, validation_filepath_output,
+    #                 validaton_filepath_freqdf, validation_filepath_tomodify,
+    #                 validation_filepath_confmat, validation_filepath_confmat_levens)
 
     validation_df = read_validation_file(validation_filepath_input)
     validation_df_FP_only = filter_FPs(validation_df)
@@ -52,11 +52,40 @@ def main():
 
     export_new_confmat(conf_matrix, validation_filepath_confmat)
 
-    # CHANGE WHEN NECESSARY
-    threshold = 1.00
+    # I tried doing this with a generator, but didn't work. It's ugly!
+    threshold_a = 0.05
+    threshold_b = 0.10
+    threshold_c = 0.15
+    threshold_d = 0.20
+    threshold_e = 0.25
+    threshold_f = 0.30
+    threshold_g = 0.35
+    threshold_h = 0.40
+    threshold_i = 0.45
+    threshold_j = 0.50
+    threshold_k = 0.55
+    threshold_l = 0.60
+    threshold_m = 0.65
+    threshold_n = 0.70
+    threshold_o = 0.75
+    threshold_p = 0.80
+    threshold_q = 0.85
+    threshold_r = 0.90
+    threshold_s = 0.95
+    threshold_t = 1.00
+    thresholds = [threshold_a, threshold_b, threshold_c, threshold_d,
+                  threshold_e, threshold_f, threshold_g, threshold_h,
+                  threshold_i, threshold_j, threshold_k, threshold_l,
+                  threshold_m, threshold_n, threshold_o, threshold_p,
+                  threshold_q, threshold_r, threshold_s, threshold_t]
 
-    new_validation_df_levensh = calc_with_Levenshteim_distance(new_validation_df, threshold)
-    create_export_new_validation_df_levensh_confmat(new_validation_df_levensh, threshold, validation_filepath_confmat_levens)
+    for threshold in thresholds:
+        new_validation_df_levensh = calc_with_Levenshteim_distance(new_validation_df, threshold)
+        create_export_new_validation_df_levensh_confmat(new_validation_df_levensh, threshold, validation_filepath_confmat_levens)
+
+
+
+
 
 def create_export_new_validation_df_levensh_confmat(new_validation_df_levensh, threshold, validation_filepath_confmat_levens):
     ref_list_binary, hyp_list_binary = get_binary_lists(new_validation_df_levensh)
@@ -135,11 +164,11 @@ def export_new_confmat(conf_matrix, validation_filepath_confmat: str):
     conf_matrix_df = pd.DataFrame(conf_matrix)
 
     conf_matrix_df.to_csv(validation_filepath_confmat, index = False)
-    print(f"\nNew Confmat stored at\t:{validation_filepath_confmat}")
+    # print(f"\nNew Confmat stored at\t:{validation_filepath_confmat}")
 
 def export_new_validation_df(new_validation_df, validation_filepath_output):
     new_validation_df.to_csv(validation_filepath_output, index=False)
-    print(f"\nNew Validation set stored at\t:{validation_filepath_output}")
+    # print(f"\nNew Validation set stored at\t:{validation_filepath_output}")
 
     
 def create_new_validation_df(validation_df, validation_df_working):

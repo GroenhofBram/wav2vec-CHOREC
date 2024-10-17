@@ -3,6 +3,5 @@ __pycache__/
 
 # files subdirectory
 files/**
-!files/.gitkeep
 output/**
 avoid_sample_files/**

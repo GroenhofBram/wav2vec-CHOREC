@@ -3,6 +3,7 @@ from os.path import join
 import os
 
 from pandas import DataFrame, concat, read_csv
+import torch
 
 from constants import WAV2VEC2_MODEL_NAME_FLDR
 from pathing import get_base_dir_folder_path
@@ -69,6 +70,8 @@ def main_generalised():
                     base_session_folder=base_session_folder,
                     ortho_df=tgt_df_repr,
                 )
+                
+                torch.cuda.empty_cache()
 
             except Exception as e:
                 msg = e
@@ -85,7 +88,7 @@ def main_generalised():
     
     process_all_conf_matrices(base_dir=base_output_dir_in_repo)
     process_all_data_files(base_dir=base_output_dir_in_repo)
-    process_snr_data(base_dir=base_output_dir_in_repo, sessions=participant_sessions)
+    # process_snr_data(base_dir=base_output_dir_in_repo, sessions=participant_sessions)
     # RUN get_metrics.py for metrics!
 
 def process_all_conf_matrices(base_dir: str):

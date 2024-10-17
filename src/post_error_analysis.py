@@ -35,7 +35,7 @@ def main():
 
     error_type_df = add_i_replace(data, error_type_df)
 
-    error_type_df = add_ch_sh(data, error_type_df)
+    error_type_df = add_ch_confusion(data, error_type_df)
 
     error_type_df = add_start_fricative(data, error_type_df)
     error_type_df = add_other_fricative(data, error_type_df)
@@ -47,6 +47,7 @@ def main():
     error_type_df = add_liquid_deletion(data, error_type_df)
 
     error_type_df = add_insertions(data, error_type_df)
+
     # # # # # #
 
 
@@ -280,14 +281,14 @@ def differ_by_start_fricative(prompt, hypothesis):
             return True
     return False
 
-def add_ch_sh(data, error_type_df):
+def add_ch_confusion(data, error_type_df):
     rows_to_add = []
 
     for i, row in data.iterrows():
-        if differ_by_sc_ch(row['prompt'], row['hypothesis']):
+        if differ_by_ch_confusion(row['prompt'], row['hypothesis']):
             if not row_exists(error_type_df, row['prompt'], row['hypothesis'], row['count']):            
                 new_row = {
-                    'error_type': 'ch/sh',
+                    'error_type': 'ch confusion',
                     'prompt': row['prompt'],
                     'hypothesis': row['hypothesis'],
                     'count': row['count'],
@@ -299,10 +300,24 @@ def add_ch_sh(data, error_type_df):
         error_type_df = pd.concat([error_type_df, pd.DataFrame(rows_to_add)], ignore_index=True)
     return error_type_df
 
-def differ_by_sc_ch(prompt, hypothesis):
-    condition1 = prompt.replace("ch", "sh") == hypothesis
-    condition2 = prompt.replace("sh", "ch") == hypothesis
-    return condition1 or condition2 
+def differ_by_ch_confusion(prompt, hypothesis):
+    len_prompt = len(prompt)
+    len_hypothesis = len(hypothesis)
+    
+
+    
+    # Check for "ch" in prompt and its absence in hypothesis at the same positions
+    for i in range(len_prompt - 1):
+        if prompt[i:i+2] == 'ch':
+            if hypothesis[i:i+2] != 'ch':
+                return True
+    
+    for i in range(len_hypothesis - 1):
+        if hypothesis[i:i+2] == 'ch':
+            if prompt[i:i+2] != 'ch':
+                return True
+    
+    return False
 
 def add_i_replace(data, error_type_df):
     rows_to_add = []
